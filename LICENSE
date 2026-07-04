@@ -1,0 +1,38 @@
+Vanta Panel — Documentation & Installer License
+Copyright (c) 2026 Vanta Panel. All rights reserved.
+
+This repository contains ONLY the public documentation and the installer /
+bootstrap scripts for Vanta Panel. It does NOT contain the Vanta Panel software
+itself.
+
+1. Scope
+   "This Repository" means the documentation, the installer and bootstrap
+   scripts, issue templates, and other supporting files distributed here.
+   "Vanta Panel" means the Vanta Panel web hosting control panel software
+   (including vWHM and vPanel), which is proprietary and is NOT included in
+   this Repository.
+
+2. Documentation and installer
+   You are granted permission to read, copy, and use the contents of This
+   Repository for the purpose of evaluating, installing, operating, and
+   troubleshooting Vanta Panel on servers you control. The installer and
+   bootstrap scripts are provided AS IS to help you install Vanta Panel; running
+   them downloads and installs the Vanta Panel software, whose use is governed
+   by its own terms (see https://vantapanel.com).
+
+3. Proprietary software
+   The Vanta Panel software is commercial and proprietary. Nothing in This
+   Repository grants any license or right to the Vanta Panel software, its
+   source code, trademarks, or brand, except as expressly stated above.
+
+4. No warranty
+   THE CONTENTS OF THIS REPOSITORY ARE PROVIDED "AS IS", WITHOUT WARRANTY OF
+   ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO
+   EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR
+   OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE CONTENTS OF THIS
+   REPOSITORY OR THEIR USE.
+
+"Vanta Panel" is a trademark of its owner. See https://vantapanel.com for
+product terms and pricing.
