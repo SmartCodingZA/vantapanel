@@ -25,7 +25,7 @@ command -v apt-get >/dev/null 2>&1 \
 
 # Fresh images sometimes lack the tools the bootstrap itself needs.
 need=""
-for c in curl unzip openssl xxd; do command -v "$c" >/dev/null 2>&1 || need="$need $c"; done
+for c in curl unzip openssl; do command -v "$c" >/dev/null 2>&1 || need="$need $c"; done
 if [ -n "$need" ]; then
   say "Installing bootstrap tools:$need"
   export DEBIAN_FRONTEND=noninteractive
@@ -34,7 +34,7 @@ if [ -n "$need" ]; then
 fi
 # openssl and xxd are REQUIRED, not optional: without them the release signature
 # below cannot be checked, and this script refuses to install unverified code.
-for c in curl unzip openssl xxd; do
+for c in curl unzip openssl; do
   command -v "$c" >/dev/null 2>&1 \
     || die "required tool '$c' could not be installed — check this server's apt sources and try again"
 done
@@ -69,13 +69,18 @@ printf '%s  %s\n' "$sha" "$work/vantapanel.zip" | sha256sum -c - >/dev/null 2>&1
 say "Verifying release signature…"
 [ -n "${sig:-}" ] || die "release manifest carries no signature — refusing to install (report this at https://vantapanel.com/contact)"
 
-printf '%s' "$VP_RELEASE_PUBKEY" | base64 -d > "$work/pub.raw" 2>/dev/null \
-  || die "pinned release key is unreadable — please report this"
-[ "$(wc -c < "$work/pub.raw")" -eq 32 ] || die "pinned release key is malformed — please report this"
-# wrap the raw 32-byte key as a DER SubjectPublicKeyInfo, then convert to PEM
-{ printf '302a300506032b6570032100'; xxd -p -c 32 "$work/pub.raw"; } | tr -d '\n' | xxd -r -p > "$work/pub.der"
-openssl pkey -pubin -inform DER -in "$work/pub.der" -out "$work/pub.pem" 2>/dev/null \
-  || die "could not load the pinned release key (needs OpenSSL 3.x) — please report this"
+# An Ed25519 SubjectPublicKeyInfo is a fixed 12-byte DER prefix followed by the
+# raw 32-byte key. 12 is divisible by 3, so in base64 the prefix maps to exactly
+# 16 characters with no padding interaction — the PEM body is therefore a plain
+# string concatenation. No xxd, no od, no base64 round-trip: nothing to install
+# beyond openssl, which matters on minimal cloud images.
+{
+  echo "-----BEGIN PUBLIC KEY-----"
+  echo "MCowBQYDK2VwAyEA${VP_RELEASE_PUBKEY}"
+  echo "-----END PUBLIC KEY-----"
+} > "$work/pub.pem"
+openssl pkey -pubin -in "$work/pub.pem" -noout 2>/dev/null \
+  || die "could not load the pinned release key (needs OpenSSL 3.x, present on Ubuntu 22.04+/Debian 12+) — please report this"
 
 printf '%s|%s|%s' "$ver" "$url" "$sha" > "$work/signed.txt"
 printf '%s' "$sig" | base64 -d > "$work/release.sig" 2>/dev/null \
