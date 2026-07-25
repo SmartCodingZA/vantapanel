@@ -2,19 +2,38 @@
 
 ## Supported versions
 
-Vanta Panel follows a rolling release. The current 4.x line receives security
-fixes; always run the latest version (currently 4.62).
+Vanta Panel follows a rolling release. The current 5.x line receives security
+fixes; always run the latest version (currently 5.36).
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 4.x     | :white_check_mark: |
-| < 4.0   | :x:                |
+| 5.x     | :white_check_mark: |
+| < 5.0   | :x:                |
 
 To update to the latest release, re-run the installer on your server:
 
 ```
 curl -fsSL https://get.vantapanel.com | sudo bash
 ```
+
+## Release integrity
+
+Every Vanta Panel release is signed with an Ed25519 key. The installer and the
+panel's auto-updater both verify a detached signature over `version|url|sha256`
+against a public key pinned in the installer, in addition to a SHA-256 check.
+A release that is tampered with, or served by anyone other than Vanta Panel,
+**fails verification and is not installed**.
+
+Public key (Ed25519, base64): `2g950+0wsBM3kjfr437q80GCYqM38BKvCpP6beZ6eRk=`
+
+To download and verify a release without installing it:
+
+```
+VP_BOOTSTRAP_ONLY=1 curl -fsSL https://get.vantapanel.com | sudo bash
+```
+
+If you ever see `RELEASE SIGNATURE IS INVALID`, do not proceed — please report it
+to security@vantapanel.com immediately.
 
 ## Reporting a vulnerability
 

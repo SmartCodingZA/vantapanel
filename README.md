@@ -2,7 +2,7 @@
 
 **A self-hosted web hosting control panel for your own VPS — a modern alternative to cPanel/WHM.**
 
-[![Version](https://img.shields.io/badge/version-4.62-2b7fff)](https://vantapanel.com)
+[![Version](https://img.shields.io/badge/version-5.36-2b7fff)](https://vantapanel.com)
 [![License](https://img.shields.io/badge/license-proprietary-lightgrey)](https://vantapanel.com)
 [![Self-hosted](https://img.shields.io/badge/self--hosted-yes-brightgreen)](https://vantapanel.com)
 [![Install](https://img.shields.io/badge/install-one%20command-blueviolet)](https://get.vantapanel.com)
@@ -35,7 +35,7 @@ No signup, no install — poke at a real running instance.
 
 ## Features
 
-Seventeen services, built in — every one available in every plan.
+Every service below is built in, and every one is available in every plan.
 
 | Service | What it does |
 | --- | --- |
@@ -56,6 +56,51 @@ Seventeen services, built in — every one available in every plan.
 | Security suite | 2FA, IP blocker, and hotlink protection |
 | One-click WordPress | Install and configure WordPress in one step |
 | Metrics & logs | Resource usage and log viewing |
+| Per-user PHP isolation | Each account runs under its own PHP-FPM pool and Linux user |
+| cPanel migration | Import a `cpmove` archive: sites, databases, mail, and cron |
+| Remote backups | Push backups to S3-compatible storage, FTP/FTPS, or SFTP |
+| Automatic updates | Daily check and self-install of new signed releases |
+| Python apps | Managed virtualenv apps served by uvicorn/gunicorn |
+| Mail filters & autoresponders | Per-mailbox Sieve rules, vacation replies, and mailing lists |
+
+## Security & release integrity
+
+Vanta Panel is proprietary software distributed as **signed releases**. The source
+code is not published in this repository — this repo holds the documentation and
+the installer only.
+
+Every release is signed with an **Ed25519** key whose private half never leaves the
+release machine. Both the installer and the panel's built-in updater verify that
+signature before anything is installed:
+
+1. `update.json` is fetched over HTTPS.
+2. The bundle's **SHA-256** is checked against the manifest.
+3. A detached **Ed25519 signature** over `version|url|sha256` is verified against a
+   public key **pinned in the installer itself**.
+
+Step 3 is what matters. A SHA-256 alone only proves the download matches what the
+server said — whoever can serve you a modified bundle can serve a matching hash.
+The signature cannot be forged without the private key, so a tampered or
+substituted release **fails to install** rather than installing silently.
+
+Release signing key (Ed25519, base64):
+
+```
+2g950+0wsBM3kjfr437q80GCYqM38BKvCpP6beZ6eRk=
+```
+
+You can verify any release yourself before installing:
+
+```bash
+curl -fsSL https://get.vantapanel.com/update.json -o update.json
+VP_BOOTSTRAP_ONLY=1 curl -fsSL https://get.vantapanel.com | sudo bash
+```
+
+`VP_BOOTSTRAP_ONLY=1` downloads and verifies the release, then stops without
+installing anything.
+
+Found a security issue? See [SECURITY.md](SECURITY.md) — please report privately
+to **security@vantapanel.com** rather than opening a public issue.
 
 ## Why Vanta Panel
 
