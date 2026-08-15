@@ -64,7 +64,9 @@ jobs:
           # container behaves like the fresh server a customer actually has.
           docker exec vp rm -f /usr/sbin/policy-rc.d
           docker exec vp bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get update -qq && apt-get install -y -qq curl ca-certificates >/dev/null'
-          docker exec vp bash -c 'curl -fsSL https://get.vantapanel.com | bash'
+          # VP_NO_INSTALL_PING suppresses the install-report email so daily CI
+          # runs never notify support@ about a test install.
+          docker exec -e VP_NO_INSTALL_PING=1 vp bash -c 'curl -fsSL https://get.vantapanel.com | bash'
 
       - name: Verify panel services and endpoints
         run: |
