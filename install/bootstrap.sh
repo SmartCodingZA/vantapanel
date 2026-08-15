@@ -17,7 +17,7 @@ BASE="https://get.vantapanel.com"
 # Ed25519 public key for release signatures. The private half never leaves the
 # Vanta Panel release box. If this value is ever changed by someone other than
 # Vanta Panel, signature verification below will FAIL rather than pass silently.
-VP_RELEASE_PUBKEY="2g950+0wsBM3kjfr437q80GCYqM38BKvCpP6beZ6eRk="
+VP_RELEASE_PUBKEY="jregvMSJcKrLBL0IAx4gnrq3kFmdyIpR8JjhAi6dnJg="
 
 [ "$(id -u)" -eq 0 ] || die "run as root:  curl -fsSL https://get.vantapanel.com | sudo bash"
 command -v apt-get >/dev/null 2>&1 \
@@ -71,8 +71,7 @@ printf '%s  %s\n' "$sha" "$work/vantapanel.zip" | sha256sum -c - >/dev/null 2>&1
 # PINNED IN THIS SCRIPT. The matching private key never leaves the release box,
 # so a tampered or substituted release cannot be signed — the install aborts.
 #
-# This same key and check are used by the panel's own auto-updater. You can
-# audit this script at https://github.com/SmartCodingZA/vantapanel
+# You can audit this script at https://github.com/SmartCodingZA/vantapanel
 say "Verifying release signature…"
 [ -n "${sig:-}" ] || die "release manifest carries no signature — refusing to install (report this at https://vantapanel.com/contact)"
 
