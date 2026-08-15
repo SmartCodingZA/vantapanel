@@ -40,7 +40,14 @@ for c in curl unzip openssl; do
 done
 
 say "Fetching release manifest…"
-manifest="$(curl -fsSL --max-time 20 "$BASE/update.json")" || die "cannot reach $BASE/update.json — check this server's internet access"
+# Fresh installs need a FULL bundle (one that contains bin/install.sh).
+# install.json points at the full bundle; update.json may point at a smaller
+# update-only package meant for panels that are already installed. Prefer
+# install.json, fall back to update.json for release servers that only
+# publish the one manifest. Both are signed the same way below.
+manifest="$(curl -fsSL --max-time 20 "$BASE/install.json" 2>/dev/null)" \
+  || manifest="$(curl -fsSL --max-time 20 "$BASE/update.json")" \
+  || die "cannot reach $BASE — check this server's internet access"
 url="$(printf '%s' "$manifest"  | sed -n 's/.*"url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'     | head -1)"
 sha="$(printf '%s' "$manifest"  | sed -n 's/.*"sha256"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'  | head -1)"
 ver="$(printf '%s' "$manifest"  | sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
@@ -95,7 +102,7 @@ say "Signature OK — authentic Vanta Panel release."
 say "Extracting…"
 unzip -q "$work/vantapanel.zip" -d "$work"
 inst="$(find "$work" -maxdepth 3 -type f -path '*/bin/install.sh' | head -1)"
-[ -n "$inst" ] || die "bundle is missing bin/install.sh — please report this at https://vantapanel.com/contact"
+[ -n "$inst" ] || die "this release was published as an update-only package (no bin/install.sh), so it cannot perform a fresh install. This is a problem with the published release, not with your server — please report it at https://vantapanel.com/contact"
 chmod +x "$inst"
 
 if [ "${VP_BOOTSTRAP_ONLY:-0}" = "1" ]; then

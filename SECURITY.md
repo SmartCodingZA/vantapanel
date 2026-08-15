@@ -3,7 +3,7 @@
 ## Supported versions
 
 Vanta Panel follows a rolling release. The current 5.x line receives security
-fixes; always run the latest version (currently 5.36).
+fixes; always run the latest version (currently 5.40).
 
 | Version | Supported          |
 | ------- | ------------------ |

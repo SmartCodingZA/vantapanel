@@ -2,7 +2,7 @@
 
 **A self-hosted web hosting control panel for your own VPS — a modern alternative to cPanel/WHM.**
 
-[![Version](https://img.shields.io/badge/version-5.36-2b7fff)](https://vantapanel.com)
+[![Version](https://img.shields.io/badge/version-5.40-2b7fff)](https://vantapanel.com)
 [![License](https://img.shields.io/badge/license-proprietary-lightgrey)](https://vantapanel.com)
 [![Self-hosted](https://img.shields.io/badge/self--hosted-yes-brightgreen)](https://vantapanel.com)
 [![Install](https://img.shields.io/badge/install-one%20command-blueviolet)](https://get.vantapanel.com)
