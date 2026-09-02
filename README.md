@@ -70,8 +70,8 @@ code is not published in this repository — this repo holds the documentation a
 the installer only.
 
 Every release is signed with an **Ed25519** key whose private half never leaves the
-release machine. Both the installer and the panel's built-in updater verify that
-signature before anything is installed:
+release machine. The installer verifies that signature before anything is
+installed:
 
 1. `update.json` is fetched over HTTPS.
 2. The bundle's **SHA-256** is checked against the manifest.
@@ -120,7 +120,7 @@ This repository is **documentation and the installer** — plus the issue tracke
 - **Website:** [vantapanel.com](https://vantapanel.com)
 - **Install endpoint:** [get.vantapanel.com](https://get.vantapanel.com)
 - **Live demo:** [demo.vantapanel.com](https://demo.vantapanel.com)
-- **Pricing:** Free `$0` · Starter `$5/mo` · Growth `$8/mo` · Unlimited `$10/mo` — see [vantapanel.com](https://vantapanel.com)
+- **Pricing:** Free `$0` (1 account) · Basic `$5/server/mo` (5 accounts) · Unlimited `$10/server/mo` — never per account. See [vantapanel.com/pricing](https://vantapanel.com/pricing)
 
 ## Support & issues
 
