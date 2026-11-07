@@ -17,7 +17,7 @@ BASE="https://get.vantapanel.com"
 # Ed25519 public key for release signatures. The private half never leaves the
 # Vanta Panel release box. If this value is ever changed by someone other than
 # Vanta Panel, signature verification below will FAIL rather than pass silently.
-VP_RELEASE_PUBKEY="2g950+0wsBM3kjfr437q80GCYqM38BKvCpP6beZ6eRk="
+VP_RELEASE_PUBKEY="jregvMSJcKrLBL0IAx4gnrq3kFmdyIpR8JjhAi6dnJg="
 
 [ "$(id -u)" -eq 0 ] || die "run as root:  curl -fsSL https://get.vantapanel.com | sudo bash"
 command -v apt-get >/dev/null 2>&1 \
@@ -40,7 +40,14 @@ for c in curl unzip openssl; do
 done
 
 say "Fetching release manifest…"
-manifest="$(curl -fsSL --max-time 20 "$BASE/update.json")" || die "cannot reach $BASE/update.json — check this server's internet access"
+# Fresh installs need a FULL bundle (one that contains bin/install.sh).
+# install.json points at the full bundle; update.json may point at a smaller
+# update-only package meant for panels that are already installed. Prefer
+# install.json, fall back to update.json for release servers that only
+# publish the one manifest. Both are signed the same way below.
+manifest="$(curl -fsSL --max-time 20 "$BASE/install.json" 2>/dev/null)" \
+  || manifest="$(curl -fsSL --max-time 20 "$BASE/update.json")" \
+  || die "cannot reach $BASE — check this server's internet access"
 url="$(printf '%s' "$manifest"  | sed -n 's/.*"url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'     | head -1)"
 sha="$(printf '%s' "$manifest"  | sed -n 's/.*"sha256"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'  | head -1)"
 ver="$(printf '%s' "$manifest"  | sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
@@ -64,8 +71,7 @@ printf '%s  %s\n' "$sha" "$work/vantapanel.zip" | sha256sum -c - >/dev/null 2>&1
 # PINNED IN THIS SCRIPT. The matching private key never leaves the release box,
 # so a tampered or substituted release cannot be signed — the install aborts.
 #
-# This same key and check are used by the panel's own auto-updater. You can
-# audit this script at https://github.com/SmartCodingZA/vantapanel
+# You can audit this script at https://github.com/SmartCodingZA/vantapanel
 say "Verifying release signature…"
 [ -n "${sig:-}" ] || die "release manifest carries no signature — refusing to install (report this at https://vantapanel.com/contact)"
 
@@ -95,7 +101,7 @@ say "Signature OK — authentic Vanta Panel release."
 say "Extracting…"
 unzip -q "$work/vantapanel.zip" -d "$work"
 inst="$(find "$work" -maxdepth 3 -type f -path '*/bin/install.sh' | head -1)"
-[ -n "$inst" ] || die "bundle is missing bin/install.sh — please report this at https://vantapanel.com/contact"
+[ -n "$inst" ] || die "this release was published as an update-only package (no bin/install.sh), so it cannot perform a fresh install. This is a problem with the published release, not with your server — please report it at https://vantapanel.com/contact"
 chmod +x "$inst"
 
 if [ "${VP_BOOTSTRAP_ONLY:-0}" = "1" ]; then
